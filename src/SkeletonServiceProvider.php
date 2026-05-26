@@ -3,8 +3,8 @@
 namespace VendorName\Skeleton;
 
 use Helix\Lego\Apps\App;
-use Spatie\LaravelPackageTools\Package;
 use Helix\Lego\Apps\AppPackageServiceProvider;
+use Spatie\LaravelPackageTools\Package;
 use VendorName\Skeleton\Settings\SkeletonSettings;
 
 class SkeletonServiceProvider extends AppPackageServiceProvider
