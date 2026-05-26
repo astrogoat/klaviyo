@@ -1,0 +1,19 @@
+name: Build
+on:
+  - push
+jobs:
+  build:
+    name: Deploy QA Site
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Webhook
+        uses: navied/secure-actions-webhook@0.2.0
+        with:
+          url: https://miles.hlx.dev/webhooks/github
+          data: '{
+            "topic": "deploy/astrogoat:skeleton",
+            "branch": "${{ github.ref_name }}",
+            "server": "production"
+          }'
+          hmacSecret: ${{ secrets.MILES_HMAC_SECRET }}

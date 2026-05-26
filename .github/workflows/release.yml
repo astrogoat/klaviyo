@@ -1,0 +1,66 @@
+name: Release new version
+
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        description: 'Semantic level bump'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  bump:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.MILES_BOT_TOKEN }}
+
+      # In order to make a commit, we need to initialize a user.
+      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
+      - name: Initialize mandatory git config
+        run: |
+          git config user.name "Miles Bot"
+          git config user.email "miles@helixsleep.com"
+
+      - name: Build assets
+        run: |
+          npm install
+          npm run prod
+
+      - name: Build assets status
+        id: build_assets_status
+        run: echo "updated=$(git status -s | tr -d '\n' | wc -m)" >> $GITHUB_OUTPUT
+
+      - name: Commit Build Assets
+        if: steps.build_assets_status.outputs.updated != '0'
+        run: |
+          git add -A public
+          git add -A package-lock.json
+          git commit -m "Build assets"
+          git push origin ${{ github.ref_name }}
+
+      - name: Bump version
+        id: bump-version
+        run: echo "version=$(npm version ${{ inputs.level }} --tag-version-prefix=)" >> $GITHUB_OUTPUT
+
+      # Make sure that the Miles Bot user is included in the list of users who can bypass required pull request requirement
+      # Your repo -> Settings -> Branches -> Main (edit) -> "Allow specified actors to bypass required pull requests"
+      - name: Push changes
+        run: git push origin ${{ github.ref_name }}
+
+      - name: Push tag
+        run: git push origin ${{ steps.bump-version.outputs.version }}
+
+      - name: Create new release
+        run: gh release create ${{ steps.bump-version.outputs.version }} --generate-notes --latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.MILES_BOT_TOKEN }}
