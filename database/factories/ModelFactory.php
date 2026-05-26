@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton\Database\Factories;
+namespace Astrogoat\Klaviyo\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

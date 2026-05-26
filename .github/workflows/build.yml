@@ -12,7 +12,7 @@ jobs:
         with:
           url: https://miles.hlx.dev/webhooks/github
           data: '{
-            "topic": "deploy/astrogoat:skeleton",
+            "topic": "deploy/astrogoat:klaviyo",
             "branch": "${{ github.ref_name }}",
             "server": "production"
           }'
