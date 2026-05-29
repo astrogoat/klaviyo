@@ -2,9 +2,9 @@
 
 namespace Astrogoat\Klaviyo\Tests;
 
+use Astrogoat\Klaviyo\KlaviyoServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Astrogoat\Klaviyo\KlaviyoServiceProvider;
 
 class TestCase extends Orchestra
 {

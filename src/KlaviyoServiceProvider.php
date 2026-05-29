@@ -2,12 +2,12 @@
 
 namespace Astrogoat\Klaviyo;
 
+use Astrogoat\Klaviyo\Settings\KlaviyoSettings;
 use Helix\Lego\Apps\App;
 use Helix\Lego\Apps\AppPackageServiceProvider;
 use Helix\Lego\Apps\Services\IncludeFrontendViews;
 use Helix\Lego\LegoManager;
 use Spatie\LaravelPackageTools\Package;
-use Astrogoat\Klaviyo\Settings\KlaviyoSettings;
 
 class KlaviyoServiceProvider extends AppPackageServiceProvider
 {
