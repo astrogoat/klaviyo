@@ -29,6 +29,10 @@ class KlaviyoServiceProvider extends AppPackageServiceProvider
         $this->callAfterResolving('lego', function (LegoManager $lego) {
             $lego->registerApp(fn (App $app) => $this->registerApp($app));
         });
+
+        $this->app->singleton('klaviyo', function ($app) {
+            return new Klaviyo();
+        });
     }
 
     public function configurePackage(Package $package): void
