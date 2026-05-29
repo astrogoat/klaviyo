@@ -3,9 +3,9 @@
 namespace Astrogoat\Klaviyo;
 
 use Astrogoat\Klaviyo\Settings\KlaviyoSettings;
-use KlaviyoAPI\KlaviyoAPI;
-use KlaviyoAPI\ApiException;
 use Illuminate\Support\Facades\Log;
+use KlaviyoAPI\ApiException;
+use KlaviyoAPI\KlaviyoAPI;
 
 class Events
 {
@@ -20,7 +20,7 @@ class Events
     {
         if ($this->client === null) {
             $settings = app(KlaviyoSettings::class);
-            if (!$settings->enabled || empty($settings->private_api_key)) {
+            if (! $settings->enabled || empty($settings->private_api_key)) {
                 return null;
             }
 
@@ -37,14 +37,16 @@ class Events
     {
         $client = $this->getClient();
 
-        if (!$client) {
+        if (! $client) {
             Log::warning('Klaviyo event not sent: Klaviyo is not enabled or Private API Key is not set.');
+
             return null;
         }
 
         $email = $eventData['email'] ?? null;
-        if (!$email) {
+        if (! $email) {
             Log::warning('Klaviyo event not sent: Email is required.');
+
             return null;
         }
 
@@ -72,6 +74,7 @@ class Events
             Log::error('Exception when calling Klaviyo API Events->createEvent: ' . $e->getMessage(), [
                 'response' => $e->getResponseBody(),
             ]);
+
             return null;
         }
     }
