@@ -7,14 +7,16 @@ use Illuminate\Validation\Rule;
 
 class KlaviyoSettings extends AppSettings
 {
-    public string $company_id;
     public string $private_api_key;
+    public string $company_id;
+    public string $form_id;
 
     public function rules(): array
     {
         return [
-            'company_id' => Rule::requiredIf($this->enabled === true),
             'private_api_key' => Rule::requiredIf($this->enabled === true),
+            'company_id' => Rule::requiredIf($this->enabled === true),
+            'form_id' => Rule::requiredIf($this->enabled === true),
         ];
     }
 
