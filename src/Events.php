@@ -3,12 +3,12 @@
 namespace Astrogoat\Klaviyo;
 
 use Astrogoat\Cart\CartItem;
-use Astrogoat\Klaviyo\Settings\KlaviyoSettings;
-use Astrogoat\Shopify\Models\Product;
-use Astrogoat\Shopify\Models\ProductVariant;
 use Astrogoat\Cart\Events\ClearingCart;
 use Astrogoat\Cart\Events\ItemAddedToCart;
 use Astrogoat\Cart\Events\ItemRemovedFromCart;
+use Astrogoat\Klaviyo\Settings\KlaviyoSettings;
+use Astrogoat\Shopify\Models\Product;
+use Astrogoat\Shopify\Models\ProductVariant;
 use Helix\Lego\Events\PageViewed;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +28,7 @@ class Events
     {
         if ($this->client === null) {
             $settings = app(KlaviyoSettings::class);
-            if (!$settings->enabled || empty($settings->private_api_key)) {
+            if (! $settings->enabled || empty($settings->private_api_key)) {
                 return null;
             }
 
@@ -45,8 +45,9 @@ class Events
     {
         $client = $this->getClient();
 
-        if (!$client) {
+        if (! $client) {
             Log::warning('Klaviyo event not sent: Klaviyo is not enabled or Private API Key is not set.');
+
             return null;
         }
 
@@ -75,6 +76,7 @@ class Events
             Log::error('Exception when calling Klaviyo API Events->createEvent: ' . $e->getMessage(), [
                 'response' => $e->getResponseBody(),
             ]);
+
             return null;
         }
     }
@@ -96,7 +98,7 @@ class Events
     public function pageViewed(PageViewed $event): void
     {
         $settings = app(KlaviyoSettings::class);
-        if (!$settings->enabled) {
+        if (! $settings->enabled) {
             return;
         }
 
@@ -173,7 +175,7 @@ class Events
     public function addToCart(ItemAddedToCart $event, ?ProductVariant $productVariant): void
     {
         $settings = app(KlaviyoSettings::class);
-        if (!$settings->enabled) {
+        if (! $settings->enabled) {
             return;
         }
 
@@ -195,7 +197,7 @@ class Events
     public function removeFromCart(ItemRemovedFromCart $event, ?ProductVariant $productVariant): void
     {
         $settings = app(KlaviyoSettings::class);
-        if (!$settings->enabled) {
+        if (! $settings->enabled) {
             return;
         }
 
@@ -217,7 +219,7 @@ class Events
     public function clearingCart(ClearingCart $event): void
     {
         $settings = app(KlaviyoSettings::class);
-        if (!$settings->enabled) {
+        if (! $settings->enabled) {
             return;
         }
 
@@ -259,7 +261,7 @@ class Events
             $productVariants = cart()->getItems()->map(function (CartItem $cartItem) {
                 $productVariant = $cartItem->findModel();
 
-                if (!$productVariant) {
+                if (! $productVariant) {
                     return null;
                 }
 
@@ -270,7 +272,7 @@ class Events
         }
 
         $products = $productVariants
-            ->reject(fn($variant) => is_null($variant))
+            ->reject(fn ($variant) => is_null($variant))
             ->map(function (ProductVariant $productVariant) {
                 $productVariant->load('product');
 
@@ -281,7 +283,7 @@ class Events
                     'category' => $productVariant?->product?->type,
                     'variant' => $productVariant?->title,
                     'price' => $productVariant?->getBuyablePrice()->divide(100)->getAmount(),
-                    'quantity' => (string) (!blank($productVariant->quantity) ? $productVariant->quantity : 1),
+                    'quantity' => (string) (! blank($productVariant->quantity) ? $productVariant->quantity : 1),
                     'product_id' => (string) $productVariant?->product?->shopify_id,
                     'variant_id' => (string) $productVariant?->shopify_id,
                     'list' => '',
@@ -322,14 +324,16 @@ class Events
     {
         $client = $this->getClient();
 
-        if (!$client) {
+        if (! $client) {
             Log::warning('Klaviyo event not sent: Klaviyo is not enabled or Private API Key is not set.');
+
             return null;
         }
 
         $email = $eventData['email'] ?? null;
-        if (!$email) {
+        if (! $email) {
             Log::warning('Klaviyo event not sent: Email is required.');
+
             return null;
         }
 
@@ -357,6 +361,7 @@ class Events
             Log::error('Exception when calling Klaviyo API Events->createEvent: ' . $e->getMessage(), [
                 'response' => $e->getResponseBody(),
             ]);
+
             return null;
         }
     }
