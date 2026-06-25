@@ -83,16 +83,12 @@ class Events
     {
         $profile = [];
 
-        $klaId = request()->cookie('__kla_id');
+        $klaId = request()->cookie('__kla_id') ?? $_COOKIE['__kla_id'] ?? null;
+
         if ($klaId) {
             $decoded = json_decode(base64_decode($klaId), true);
             $profile = $decoded;
         }
-
-        if (empty($profile)) {
-            $profile['anonymous_id'] = session()->getId();
-        }
-
 
         return $profile;
     }
@@ -290,7 +286,6 @@ class Events
                     'variant_id' => (string) $productVariant?->shopify_id,
                     'list' => '',
                     'compare_at_price' => (string) 0.0,
-                    'image' => $productVariant->getFirstMedia('Product')?->url,
                     'url' => route('products.variants.show', [$productVariant->product, $productVariant]),
                 ];
             })->values();
